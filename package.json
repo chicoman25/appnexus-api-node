@@ -10,7 +10,7 @@
   "author": "Sovrn",
   "license": "ISC",
   "dependencies": {
-    "request": "^2.88.0"
+    "axios": "^0.19.2"
   },
   "devDependencies": {
     "esdoc": "^1.1.0",

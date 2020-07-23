@@ -1,4 +1,4 @@
-const request = require('request');
+const axios = require('axios').default;
 const url = require('url');
 
 /**
@@ -17,8 +17,46 @@ module.exports = class AppNexusApi {
         this.protocol = options.protocol || 'https';
         this.host = options.host || 'api.appnexus.com';
         this.port = options.port || null;
-        // this is here to support testing.
-        this.request = options.request || request;
+        this.username = options.username;
+        this.password = options.password;
+    }
+
+    /**
+     * @name auth
+     * @function
+     * Attempts to authenticate with AppNexus.  Upon successful authentication returns the 
+     * provided token to make subsequennt calls.  Note that a token can be used for up to 2 hours.
+     * https://docs.xandr.com/bundle/xandr-api/page/authentication-service.html
+     */
+    async auth() {
+        const authUrl = this.makeUri("auth");
+        const requestConfig = {
+            url: this.makeUri("auth"),
+            method: "POST",
+            data: this.makeCredentialsJson(this.username, this.password),
+            headers: {
+                'Accept': 'application/json',
+                'Accept-Charset': 'utf-8'
+            }
+        };
+        const serverResponse = await axios(requestConfig)
+        const jsonResponse = serverResponse.data.response
+        if (jsonResponse.error_id) { 
+            console.error("I got an error: " + jsonResponse.error);
+            throw new Error(jsonResponse.error);
+        }
+        else {
+            return jsonResponse.token;
+        }
+    }
+
+    makeCredentialsJson(user, pass) {
+        return {
+            auth: {
+                username: user,
+                password: pass
+            }
+        };
     }
 
     /**
@@ -38,42 +76,6 @@ module.exports = class AppNexusApi {
             query,
         });
         return encode ? encodeURI(uri) : decodeURIComponent(uri);
-    }
-
-    auth() {
-        const authUrl = this.makeUri("auth");
-        const requestOptions = {
-            url: this.makeUri("auth"),
-            method: "POST",
-            body: JSON.stringify(this.getCredentials()),
-            headers: {
-                'Accept': 'application/json',
-                'Accept-Charset': 'utf-8'
-            }
-        };
-
-        const response = this.request(requestOptions, function (err, res, body) {
-            if (err) {
-                console.log("Server responded with an error: " + err);
-            }
-            else {
-                console.log("Received Response: " + body);
-                const resp = JSON.parse(body);
-                if (resp.response.error_id) {
-                    console.log("Received an error response: " + resp.response.error_id)
-                }
-            }
-            return body;
-        });
-    }
-
-    getCredentials() {
-        return {
-            "auth": {
-                "username": "jaisovrnj",
-                "password": "J@1sovrn123"
-            }
-        };
     }
 
 
