@@ -8,17 +8,25 @@ describe(__filename, () => {
   describe('Constructor Tests', () => {
     it('Constructor functions properly', () => {
       const appNexus = new AppNexusApi(getOptions());
-
       expect(appNexus.protocol).toEqual('https');
       expect(appNexus.host).toEqual('api.appnexus.com');
       expect(appNexus.port).toEqual('80');
     });
   });
 
-  describe('makeUri', () => {
+  describe('makeUri Tests', () => {
     it('builds url with pathname, protocol, host, and defafult port', () => {
       const appNexus = new AppNexusApi(getOptions());
       expect(appNexus.makeUri("auth")).toEqual("https://api.appnexus.com:80/auth");
+    });
+  });
+
+  describe('auth Tests', () => {
+    // AppNexus suspends auth calls for 5 minutes after too many tries.
+    it('fails with a response of too many tries', () => {
+      const appNexus = new AppNexusApi(getOptions());
+      var response = appNexus.auth();
+      expect(response).toEqual(unauthorizedResponse);
     });
   });
 
