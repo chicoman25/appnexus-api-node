@@ -1,0 +1,32 @@
+{
+  "name": "appnexus-mapper-node",
+  "version": "1.0.0",
+  "description": "Application to create publishers, sites, and ad placements with the AppNexus API",
+  "main": "src/mapper.js",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/sovrn/appnexus-mapper-node"
+  },
+  "author": "Sovrn",
+  "license": "ISC",
+  "dependencies": {
+    "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "esdoc": "^1.1.0",
+    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
+    "esdoc-standard-plugin": "^1.0.0",
+    "eslint": "^6.3.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "jest": "^24.9.0"
+  },
+  "scripts": {
+    "start": "node src/mapper.js",
+    "docs-build": "rm -rf docs && esdoc -c esdoc.json",
+    "lint": "eslint ./",
+    "test": "jest",
+    "test:coverage": "jest --coverage --no-watch --silent",
+    "test:watch": "jest --watch"
+  }
+}
