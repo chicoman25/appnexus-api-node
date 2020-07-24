@@ -1,5 +1,6 @@
 const axios = require('axios').default;
 const url = require('url');
+const { rejects } = require('assert');
 
 /**
  * @name AppNexusApi
@@ -28,35 +29,23 @@ module.exports = class AppNexusApi {
      * provided token to make subsequennt calls.  Note that a token can be used for up to 2 hours.
      * https://docs.xandr.com/bundle/xandr-api/page/authentication-service.html
      */
-    async auth() {
-        const authUrl = this.makeUri("auth");
-        const requestConfig = {
-            url: this.makeUri("auth"),
-            method: "POST",
-            data: this.makeCredentialsJson(this.username, this.password),
-            headers: {
-                'Accept': 'application/json',
-                'Accept-Charset': 'utf-8'
+    async login(username, password) {
+        var credentials = { 
+            auth: {
+                username: username,
+                password: password
             }
         };
-        const serverResponse = await axios(requestConfig)
-        const jsonResponse = serverResponse.data.response
-        if (jsonResponse.error_id) { 
-            console.error("I got an error: " + jsonResponse.error);
-            throw new Error(jsonResponse.error);
+        const authUrl = this.makeUri("auth");
+        const serverResponse = await axios.post(authUrl, credentials);
+        if (this.statusOk(serverResponse)) { 
+            return serverResponse.data.response.token;
         }
-        else {
-            return jsonResponse.token;
-        }
+        throw new Error(serverResponse.data.response.error);
     }
 
-    makeCredentialsJson(user, pass) {
-        return {
-            auth: {
-                username: user,
-                password: pass
-            }
-        };
+    statusOk(body) {
+        return !!body && !!body.data.response && body.data.response.status === 'OK';
     }
 
     /**

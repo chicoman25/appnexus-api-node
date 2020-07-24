@@ -5,10 +5,16 @@
   "main": "src/mapper.js",
   "repository": {
     "type": "git",
-    "url": "http://github.com/sovrn/appnexus-mapper-node"
+    "url": "https://github.com/chicoman25/appnexus-api-node"
   },
-  "author": "Sovrn",
-  "license": "ISC",
+  "author": "Ryan Chichirico",
+  "license": "Apache-2.0",
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ],
   "dependencies": {
     "axios": "^0.19.2"
   },
@@ -19,7 +25,11 @@
     "eslint": "^6.3.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
+    "nock": "^13.0.2",
     "jest": "^24.9.0"
+  },
+  "engines": {
+    "node": ">=12.9"
   },
   "scripts": {
     "start": "node src/mapper.js",
@@ -28,5 +38,23 @@
     "test": "jest",
     "test:coverage": "jest --coverage --no-watch --silent",
     "test:watch": "jest --watch"
+  },
+  "jest": {
+    "verbose": false,
+    "testEnvironment": "node",
+    "coverageDirectory": "../coverage/",
+    "collectCoverageFrom": [
+      "**/*.js",
+      "**/*.ts"
+    ],
+    "coverageReporters": [
+      "html"
+    ],
+    "rootDir": "src",
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json"
+    ]
   }
 }
