@@ -5,28 +5,30 @@ const { rejects } = require('assert');
 /**
  * @name AppNexusApi
  * @class
- * Wrapper for the AppNexus (Xandr) Rest Api
+ * Wrapper for the AppNexus (Xandr) Rest Api.
  * https://docs.xandr.com/bundle/xandr-api/page/api-getting-started.html 
 */
 module.exports = class AppNexusApi {
     /**
      * @constructor
      * @function
-     * @param {JiraApiOptions} options
+     * @param {XandrApiOptions} options
      */
     constructor(options) {
         this.protocol = options.protocol || 'https';
-        this.host = options.host || 'api.appnexus.com';
+        this.host = options.host || 'api-test.appnexus.com';
         this.port = options.port || null;
         this.username = options.username;
         this.password = options.password;
+        this.token = options.token || null;
     }
 
     /**
-     * @name auth
+     * @name login
      * @function
-     * Attempts to authenticate with AppNexus.  Upon successful authentication returns the 
-     * provided token to make subsequennt calls.  Note that a token can be used for up to 2 hours.
+     * Attempts to authenticate with AppNexus' Authentication service.  
+     * Upon successful authentication sets the caches the token on this class and returns a promise encapsulating 
+     * the token.  This token can be used to make make subsequennt calls within a 2 hour period before expiration.
      * https://docs.xandr.com/bundle/xandr-api/page/authentication-service.html
      */
     async login(username, password) {
@@ -39,13 +41,14 @@ module.exports = class AppNexusApi {
         const authUrl = this.makeUri("auth");
         const serverResponse = await axios.post(authUrl, credentials);
         if (this.statusOk(serverResponse)) { 
-            return serverResponse.data.response.token;
+            this.token = serverResponse.data.response.token;
+            return this.token;
         }
         throw new Error(serverResponse.data.response.error);
     }
 
-    statusOk(body) {
-        return !!body && !!body.data.response && body.data.response.status === 'OK';
+    statusOk(resp) {
+        return !!resp && !!resp.data.response && resp.data.response.status === 'OK';
     }
 
     /**

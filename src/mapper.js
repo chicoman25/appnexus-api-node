@@ -4,7 +4,7 @@ var appNexus = new AppNexusApi({});
     
 (async () => {
     try{
-        var token = await appNexus.login("", "");
+        var token = await appNexus.login("jaisovrn", "J@1sovrn123");
         console.log("Login token:" + token);
     }
     catch(e){
